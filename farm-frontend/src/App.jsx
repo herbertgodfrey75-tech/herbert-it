@@ -16,7 +16,6 @@ function App() {
 
 
   async function fetchStudents() {
-
     try {
 
       const response = await fetch(`${API_URL}/student`);
@@ -24,31 +23,29 @@ function App() {
 
       setStudents(data);
 
-    } catch (error) {
+    } catch(error) {
 
-      console.log("Fetch error:", error);
+      console.log(error);
 
     }
-
   }
 
 
 
   useEffect(() => {
-
     fetchStudents();
-
   }, []);
 
 
 
 
-  async function handleSubmit(event) {
 
-    event.preventDefault();
+  async function handleSubmit(e) {
+
+    e.preventDefault();
 
 
-    const newStudent = {
+    const student = {
 
       student_name: studentName,
       student_email: studentEmail,
@@ -58,47 +55,55 @@ function App() {
     };
 
 
+    const response = await fetch(`${API_URL}/student`, {
 
-    try {
+      method:"POST",
 
+      headers:{
+        "Content-Type":"application/json"
+      },
 
-      const response = await fetch(`${API_URL}/student`, {
+      body:JSON.stringify(student)
 
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(newStudent)
-
-      });
+    });
 
 
-
-      if (!response.ok) {
-
-        console.log("Failed adding student");
-        return;
-
-      }
-
-
+    if(response.ok){
 
       setStudentName("");
       setStudentEmail("");
       setPhoneNumber("");
       setStudentLevel("");
 
+      fetchStudents();
+
+    } else {
+
+      const error = await response.text();
+      console.log("Backend error:", error);
+
+    }
+
+  }
+
+
+
+
+
+  async function deleteStudent(id){
+
+    const response = await fetch(
+      `${API_URL}/student/${id}`,
+      {
+        method:"DELETE"
+      }
+    );
+
+
+    if(response.ok){
 
       fetchStudents();
 
-
-
-    } catch(error) {
-
-      console.log("Add error:", error);
-
     }
 
   }
@@ -107,68 +112,29 @@ function App() {
 
 
 
-  async function deleteStudent(id) {
+  async function updateStudent(id, student){
 
 
-    try {
-
-
-      const response = await fetch(
-        `${API_URL}/student/${id}`,
-        {
-          method: "DELETE"
-        }
-      );
-
-
-
-      if(response.ok){
-
-        fetchStudents();
-
-      }
-
-
-
-    } catch(error) {
-
-      console.log("Delete error:", error);
-
-    }
-
-  }
-
-
-
-
-
-  async function updateStudent(id, student) {
-
-
-    const updatedStudent = {
-
+    const updated = {
 
       student_name: prompt(
-        "Name:",
+        "Name",
         student.student_name
       ),
 
-
       student_email: prompt(
-        "Email:",
+        "Email",
         student.student_email
       ),
 
-
       student_phone_no: prompt(
-        "Phone:",
+        "Phone",
         student.student_phone_no
       ),
 
-
-      student_level: Number(
+      student_level:Number(
         prompt(
-          "Level:",
+          "Level",
           student.student_level
         )
       )
@@ -177,45 +143,29 @@ function App() {
 
 
 
+    const response = await fetch(
+      `${API_URL}/student/${id}`,
+      {
 
+        method:"PUT",
 
-    try {
+        headers:{
+          "Content-Type":"application/json"
+        },
 
-
-      const response = await fetch(
-        `${API_URL}/student/${id}`,
-        {
-
-          method:"PUT",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify(updatedStudent)
-
-        }
-      );
-
-
-
-      if(response.ok){
-
-        fetchStudents();
+        body:JSON.stringify(updated)
 
       }
+    );
 
 
+    if(response.ok){
 
-    } catch(error){
-
-      console.log("Update error:", error);
+      fetchStudents();
 
     }
 
-
   }
-
 
 
 
@@ -242,17 +192,14 @@ function App() {
 
 
 
-
-
       <form onSubmit={handleSubmit}>
 
 
         <label>Name</label>
 
         <input
-          type="text"
           value={studentName}
-          onChange={(e)=>setStudentName(e.target.value)}
+          onChange={e=>setStudentName(e.target.value)}
         />
 
 
@@ -260,9 +207,8 @@ function App() {
         <label>Email</label>
 
         <input
-          type="email"
           value={studentEmail}
-          onChange={(e)=>setStudentEmail(e.target.value)}
+          onChange={e=>setStudentEmail(e.target.value)}
         />
 
 
@@ -270,9 +216,8 @@ function App() {
         <label>Phone</label>
 
         <input
-          type="text"
           value={phoneNumber}
-          onChange={(e)=>setPhoneNumber(e.target.value)}
+          onChange={e=>setPhoneNumber(e.target.value)}
         />
 
 
@@ -282,12 +227,12 @@ function App() {
         <input
           type="number"
           value={studentLevel}
-          onChange={(e)=>setStudentLevel(e.target.value)}
+          onChange={e=>setStudentLevel(e.target.value)}
         />
 
 
 
-        <button type="submit">
+        <button className="counter">
           Add Student
         </button>
 
@@ -298,100 +243,61 @@ function App() {
 
 
 
-
-      <div id="next-steps">
-
+      <h2>Student List</h2>
 
 
-        <div>
+      {students.map(student => (
+
+        <div key={student.id}>
 
 
-          <h2>
-            Preview
-          </h2>
+          <p>
+            Name: {student.student_name}
+          </p>
 
 
-          <p>Name: {studentName}</p>
-          <p>Email: {studentEmail}</p>
-          <p>Phone: {phoneNumber}</p>
-          <p>Level: {studentLevel}</p>
+          <p>
+            Email: {student.student_email}
+          </p>
 
 
-        </div>
+          <p>
+            Phone: {student.student_phone_no}
+          </p>
 
 
-
-
-
-
-        <div>
-
-
-          <h2>
-            Student List
-          </h2>
+          <p>
+            Level: {student.student_level}
+          </p>
 
 
 
-          {students.map((student)=>(
 
-
-            <div key={student.id}>
-
-
-              <p>
-                Name: {student.student_name}
-              </p>
-
-
-              <p>
-                Email: {student.student_email}
-              </p>
-
-
-              <p>
-                Phone: {student.student_phone_no}
-              </p>
-
-
-              <p>
-                Level: {student.student_level}
-              </p>
+          <button
+            className="counter"
+            onClick={()=>updateStudent(student.id, student)}
+          >
+            Update
+          </button>
 
 
 
-              <button
-                onClick={() =>
-                  updateStudent(student.id, student)
-                }
-              >
-                Update
-              </button>
+          <button
+            className="counter"
+            onClick={()=>deleteStudent(student.id)}
+          >
+            Delete
+          </button>
 
 
 
-              <button
-                onClick={() =>
-                  deleteStudent(student.id)
-                }
-              >
-                Delete
-              </button>
-
-
-              <hr/>
-
-
-            </div>
-
-
-          ))}
+          <hr/>
 
 
         </div>
 
+      ))}
 
-      </div>
 
 
     </div>
