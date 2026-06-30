@@ -1,32 +1,46 @@
 import asyncio
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from config.database import db
-import asyncio  # Imports asyncio so we can run asynchronous test code.
 from routers.students import student_router
-from config.database import db
-from fastapi import FastAPI  # Imports FastAPI so we can create the web app.
-from fastapi.middleware.cors import CORSMiddleware  # Imports CORS middleware to handle cross-origin requests.
 
 
-async def test():  # Defines an async function to test the database connection.
-    result = await db.list_collection_names()  # Gets the names of all collections in the database.
-    print("Mongo DB Connected! Collections:", result)  # Prints a success message and the collection names.
+async def test():
+    result = await db.list_collection_names()
+    print("Mongo DB Connected! Collections:", result)
 
-    
 
-if __name__ == "__main__":  # Runs this block only when this file is started directly.
-    asyncio.run(test())  # Starts the async database test function.
+# Test database connection when running locally
+if __name__ == "__main__":
+    asyncio.run(test())
 
-app = FastAPI(  # Creates the FastAPI application.
-    title="A student FARM APP",  # Sets the title shown in the API docs.
-    description="This is a Student FARM app"  # Sets the description shown in the API docs.
-)  # Finishes creating the FastAPI app.
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["  http://localhost:5173"],  # Allows all origins (for development purposes only)
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
+app = FastAPI(
+    title="A Student FARM APP",
+    description="This is a Student FARM app"
 )
 
-app.include_router(student_router)  
+
+# CORS SETTINGS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://herbert-it.onrender.com"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# Student routes
+app.include_router(student_router)
+
+
+@app.get("/")
+async def home():
+    return {
+        "message": "Student FARM API is running 🚀"
+    }
