@@ -16,25 +16,32 @@ function App() {
 
 
   async function fetchStudents() {
+
     try {
 
       const response = await fetch(`${API_URL}/student`);
+
       const data = await response.json();
 
       setStudents(data);
 
+
     } catch(error) {
 
-      console.log(error);
+      console.log("Fetch error:", error);
 
     }
+
   }
 
 
 
   useEffect(() => {
+
     fetchStudents();
+
   }, []);
+
 
 
 
@@ -55,36 +62,62 @@ function App() {
     };
 
 
-    const response = await fetch(`${API_URL}/student`, {
 
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify(student)
-
-    });
+    try {
 
 
-    if(response.ok){
+      const response = await fetch(
+        `${API_URL}/student`,
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(student)
+
+        }
+      );
+
+
+
+      const data = await response.json();
+
+
+
+      if(!response.ok){
+
+        console.log("Backend error:", data);
+        return;
+
+      }
+
+
+
 
       setStudentName("");
       setStudentEmail("");
       setPhoneNumber("");
       setStudentLevel("");
 
+
+
       fetchStudents();
 
-    } else {
 
-      const error = await response.text();
-      console.log("Backend error:", error);
+
+    } catch(error) {
+
+      console.log("Connection error:", error);
 
     }
 
   }
+
+
+
 
 
 
@@ -92,21 +125,39 @@ function App() {
 
   async function deleteStudent(id){
 
-    const response = await fetch(
-      `${API_URL}/student/${id}`,
-      {
-        method:"DELETE"
+
+    try {
+
+
+      const response = await fetch(
+        `${API_URL}/student/${id}`,
+        {
+          method:"DELETE"
+        }
+      );
+
+
+
+      if(response.ok){
+
+        fetchStudents();
+
       }
-    );
 
 
-    if(response.ok){
 
-      fetchStudents();
+    } catch(error){
+
+      console.log("Delete error:", error);
 
     }
 
+
   }
+
+
+
+
 
 
 
@@ -115,57 +166,79 @@ function App() {
   async function updateStudent(id, student){
 
 
-    const updated = {
+    const updatedStudent = {
+
 
       student_name: prompt(
         "Name",
         student.student_name
       ),
 
+
       student_email: prompt(
         "Email",
         student.student_email
       ),
+
 
       student_phone_no: prompt(
         "Phone",
         student.student_phone_no
       ),
 
-      student_level:Number(
+
+      student_level: Number(
         prompt(
           "Level",
           student.student_level
         )
       )
 
+
     };
 
 
 
-    const response = await fetch(
-      `${API_URL}/student/${id}`,
-      {
+    try {
 
-        method:"PUT",
 
-        headers:{
-          "Content-Type":"application/json"
-        },
+      const response = await fetch(
+        `${API_URL}/student/${id}`,
+        {
 
-        body:JSON.stringify(updated)
+          method:"PUT",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(updatedStudent)
+
+        }
+      );
+
+
+
+      if(response.ok){
+
+        fetchStudents();
 
       }
-    );
 
 
-    if(response.ok){
 
-      fetchStudents();
+    } catch(error){
+
+      console.log("Update error:", error);
 
     }
 
+
   }
+
+
+
+
 
 
 
@@ -192,48 +265,86 @@ function App() {
 
 
 
+
+
       <form onSubmit={handleSubmit}>
 
 
         <label>Name</label>
 
         <input
+
           value={studentName}
-          onChange={e=>setStudentName(e.target.value)}
+
+          onChange={(e)=>setStudentName(e.target.value)}
+
+          required
+
         />
+
 
 
 
         <label>Email</label>
 
         <input
+
+          type="email"
+
           value={studentEmail}
-          onChange={e=>setStudentEmail(e.target.value)}
+
+          onChange={(e)=>setStudentEmail(e.target.value)}
+
+          required
+
         />
+
+
 
 
 
         <label>Phone</label>
 
         <input
+
           value={phoneNumber}
-          onChange={e=>setPhoneNumber(e.target.value)}
+
+          onChange={(e)=>setPhoneNumber(e.target.value)}
+
+          required
+
         />
+
+
+
 
 
 
         <label>Level</label>
 
         <input
+
           type="number"
+
           value={studentLevel}
-          onChange={e=>setStudentLevel(e.target.value)}
+
+          onChange={(e)=>setStudentLevel(e.target.value)}
+
+          required
+
         />
 
 
 
-        <button className="counter">
+
+
+        <button
+          className="counter"
+          type="submit"
+        >
+
           Add Student
+
         </button>
 
 
@@ -243,10 +354,19 @@ function App() {
 
 
 
-      <h2>Student List</h2>
 
 
-      {students.map(student => (
+      <h2>
+        Student List
+      </h2>
+
+
+
+
+
+
+      {students.map((student)=>(
+
 
         <div key={student.id}>
 
@@ -256,14 +376,17 @@ function App() {
           </p>
 
 
+
           <p>
             Email: {student.student_email}
           </p>
 
 
+
           <p>
             Phone: {student.student_phone_no}
           </p>
+
 
 
           <p>
@@ -273,21 +396,40 @@ function App() {
 
 
 
+
           <button
+
             className="counter"
-            onClick={()=>updateStudent(student.id, student)}
+
+            onClick={() =>
+              updateStudent(student.id, student)
+            }
+
           >
+
             Update
+
           </button>
+
+
+
 
 
 
           <button
+
             className="counter"
-            onClick={()=>deleteStudent(student.id)}
+
+            onClick={() =>
+              deleteStudent(student.id)
+            }
+
           >
+
             Delete
+
           </button>
+
 
 
 
@@ -295,6 +437,7 @@ function App() {
 
 
         </div>
+
 
       ))}
 
