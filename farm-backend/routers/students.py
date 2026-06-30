@@ -5,62 +5,123 @@ from fastapi import APIRouter, HTTPException
 from bson import ObjectId
 from bson.errors import InvalidId
 
+
 student_router = APIRouter()
 
 
+
+# GET ALL STUDENTS
 @student_router.get("/student", response_model=list[StudentResponse])
 async def get_list_of_students():
+
     students = []
 
+
     async for student in db.students.find():
+
         student["id"] = str(student["_id"])
-        del student["_id"]
+        student.pop("_id", None)
+
         students.append(student)
+
 
     return students
 
 
+
+
+
+
+# GET ONE STUDENT
 @student_router.get("/student/{student_id}", response_model=StudentResponse)
 async def get_one_student(student_id: str):
 
     try:
+
         student = await db.students.find_one(
-            {"_id": ObjectId(student_id)}
+            {
+                "_id": ObjectId(student_id)
+            }
         )
+
+
     except InvalidId:
+
         raise HTTPException(
             status_code=400,
             detail="Invalid student id"
         )
 
-    if student is None:
+
+
+    if not student:
+
         raise HTTPException(
             status_code=404,
             detail="Student not found"
         )
 
+
+
     student["id"] = str(student["_id"])
-    del student["_id"]
+    student.pop("_id", None)
+
 
     return student
 
 
 
+
+
+
+
+# CREATE STUDENT
 @student_router.post("/student", response_model=StudentResponse)
 async def create_new_student(student: Student):
 
-    student_dict = student.model_dump()
+    try:
 
-    result = await db.students.insert_one(student_dict)
+        student_data = student.model_dump()
 
-    new_student = await db.students.find_one(
-        {"_id": result.inserted_id}
-    )
 
-    new_student["id"] = str(new_student["_id"])
-    del new_student["_id"]
+        result = await db.students.insert_one(
+            student_data
+        )
 
-    return new_student
+
+        created_student = await db.students.find_one(
+            {
+                "_id": result.inserted_id
+            }
+        )
+
+
+        created_student["id"] = str(
+            created_student["_id"]
+        )
+
+        created_student.pop("_id", None)
+
+
+        return created_student
+
+
+
+    except Exception as e:
+
+        print("CREATE STUDENT ERROR:", e)
+
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+
+
+
+
 
 
 
@@ -68,36 +129,61 @@ async def create_new_student(student: Student):
 @student_router.put("/student/{student_id}", response_model=StudentResponse)
 async def update_student(student_id: str, student: Student):
 
+
     try:
-        student_object_id = ObjectId(student_id)
+
+        object_id = ObjectId(student_id)
+
+
     except InvalidId:
+
         raise HTTPException(
             status_code=400,
             detail="Invalid student id"
         )
 
 
+
     updated = await db.students.update_one(
-        {"_id": student_object_id},
-        {"$set": student.model_dump()}
+
+        {
+            "_id": object_id
+        },
+
+        {
+            "$set": student.model_dump()
+        }
+
     )
 
 
+
     if updated.matched_count == 0:
+
         raise HTTPException(
             status_code=404,
             detail="Student not found"
         )
 
 
-    updated_student = await db.students.find_one(
-        {"_id": student_object_id}
+
+    result = await db.students.find_one(
+        {
+            "_id": object_id
+        }
     )
 
-    updated_student["id"] = str(updated_student["_id"])
-    del updated_student["_id"]
 
-    return updated_student
+
+    result["id"] = str(result["_id"])
+    result.pop("_id", None)
+
+
+    return result
+
+
+
+
 
 
 
@@ -105,26 +191,36 @@ async def update_student(student_id: str, student: Student):
 @student_router.delete("/student/{student_id}")
 async def delete_student(student_id: str):
 
+
     try:
-        student_object_id = ObjectId(student_id)
+
+        object_id = ObjectId(student_id)
+
 
     except InvalidId:
+
         raise HTTPException(
             status_code=400,
             detail="Invalid student id"
         )
 
 
+
     deleted = await db.students.delete_one(
-        {"_id": student_object_id}
+        {
+            "_id": object_id
+        }
     )
 
 
+
     if deleted.deleted_count == 0:
+
         raise HTTPException(
             status_code=404,
             detail="Student not found"
         )
+
 
 
     return {
