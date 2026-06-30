@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API_URL = " http://127.0.0.1:8000";
+const API_URL = "https://herbert-it.onrender.com";
 
 
 function App() {
@@ -21,11 +20,9 @@ function App() {
     try {
 
       const response = await fetch(`${API_URL}/student`);
-
       const data = await response.json();
 
       setStudents(data);
-
 
     } catch(error) {
 
@@ -37,13 +34,9 @@ function App() {
 
 
 
-
   useEffect(() => {
-
     fetchStudents();
-
   }, []);
-
 
 
 
@@ -63,9 +56,7 @@ function App() {
     };
 
 
-
     try {
-
 
       const response = await fetch(`${API_URL}/student`, {
 
@@ -83,34 +74,127 @@ function App() {
 
       if(!response.ok){
 
-        const error = await response.json();
-
-        console.log("Create error:", error);
-
+        console.log("Create failed");
         return;
 
       }
 
 
 
-      // CLEAR INPUTS
-
       setStudentName("");
       setStudentEmail("");
       setPhoneNumber("");
       setStudentLevel("");
 
-
-
-      // REFRESH STUDENT LIST
-
       fetchStudents();
 
 
 
-    } catch(error) {
+    } catch(error){
 
       console.log("Submit error:", error);
+
+    }
+
+  }
+
+
+
+
+  async function deleteStudent(id){
+
+    try{
+
+      const response = await fetch(
+        `${API_URL}/student/${id}`,
+        {
+          method:"DELETE"
+        }
+      );
+
+
+      if(response.ok){
+        fetchStudents();
+      }
+
+
+    }catch(error){
+
+      console.log("Delete error:", error);
+
+    }
+
+  }
+
+
+
+
+
+  async function updateStudent(id, student){
+
+
+    const name = prompt(
+      "Student name:",
+      student.student_name
+    );
+
+    const email = prompt(
+      "Student email:",
+      student.student_email
+    );
+
+    const phone = prompt(
+      "Student phone:",
+      student.student_phone_no
+    );
+
+    const level = prompt(
+      "Student level:",
+      student.student_level
+    );
+
+
+
+    const updatedStudent = {
+
+      student_name:name,
+      student_email:email,
+      student_phone_no:phone,
+      student_level:Number(level)
+
+    };
+
+
+
+    try{
+
+
+      const response = await fetch(
+        `${API_URL}/student/${id}`,
+        {
+
+          method:"PUT",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(updatedStudent)
+
+        }
+      );
+
+
+      if(response.ok){
+
+        fetchStudents();
+
+      }
+
+
+    }catch(error){
+
+      console.log("Update error:", error);
 
     }
 
@@ -134,10 +218,10 @@ function App() {
       </div>
 
 
-
       <p>
         React + FastAPI + MongoDB Student System
       </p>
+
 
 
 
@@ -164,7 +248,6 @@ function App() {
 
 
 
-
         <div>
 
           <label>Email</label>
@@ -180,7 +263,6 @@ function App() {
           />
 
         </div>
-
 
 
 
@@ -204,7 +286,6 @@ function App() {
 
 
 
-
         <div>
 
           <label>Level</label>
@@ -223,7 +304,6 @@ function App() {
 
 
 
-
         <button className="counter" type="submit">
 
           Add Student
@@ -233,6 +313,7 @@ function App() {
 
 
       </form>
+
 
 
 
@@ -255,7 +336,6 @@ function App() {
 
 
         </div>
-
 
 
 
@@ -297,6 +377,27 @@ function App() {
 
 
 
+
+              <button
+                onClick={() =>
+                  updateStudent(student.id, student)
+                }
+              >
+                Update
+              </button>
+
+
+
+              <button
+                onClick={() =>
+                  deleteStudent(student.id)
+                }
+              >
+                Delete
+              </button>
+
+
+
               <hr/>
 
 
@@ -304,7 +405,6 @@ function App() {
 
 
           ))}
-
 
 
         </div>
