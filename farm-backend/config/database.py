@@ -3,11 +3,16 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-mongodb_url= os.getenv("mongodb_url")
-DB_NAME = os.getenv("DB_NAME")
+
+
+MONGODB_URL = os.getenv("MONGODB_URL")
+DB_NAME = os.getenv("DB_NAME", "student_db")
+
 
 client = AsyncIOMotorClient(
-    mongodb_url,
-    serverSelectionTimeoutMS=5000,
-    )
+    MONGO_URL,
+    serverSelectionTimeoutMS=5000
+)
+
+
 db = client[DB_NAME]
