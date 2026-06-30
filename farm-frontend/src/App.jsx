@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API_URL = " https://herbert-it.onrender.com";
+const API_URL = "https://herbert-it.onrender.com";
 
 
 function App() {
