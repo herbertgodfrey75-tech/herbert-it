@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API_URL = "https://herbert-it.onrender.com";
+const API_URL = " https://herbert-it.onrender.com";
 
 
 function App() {
@@ -24,9 +24,9 @@ function App() {
 
       setStudents(data);
 
-    } catch(error) {
+    } catch (error) {
 
-      console.log("Fetching error:", error);
+      console.log("Fetch error:", error);
 
     }
 
@@ -35,7 +35,9 @@ function App() {
 
 
   useEffect(() => {
+
     fetchStudents();
+
   }, []);
 
 
@@ -56,25 +58,27 @@ function App() {
     };
 
 
+
     try {
+
 
       const response = await fetch(`${API_URL}/student`, {
 
-        method:"POST",
+        method: "POST",
 
-        headers:{
-          "Content-Type":"application/json"
+        headers: {
+          "Content-Type": "application/json"
         },
 
-        body:JSON.stringify(newStudent)
+        body: JSON.stringify(newStudent)
 
       });
 
 
 
-      if(!response.ok){
+      if (!response.ok) {
 
-        console.log("Create failed");
+        console.log("Failed adding student");
         return;
 
       }
@@ -86,13 +90,14 @@ function App() {
       setPhoneNumber("");
       setStudentLevel("");
 
+
       fetchStudents();
 
 
 
-    } catch(error){
+    } catch(error) {
 
-      console.log("Submit error:", error);
+      console.log("Add error:", error);
 
     }
 
@@ -101,24 +106,31 @@ function App() {
 
 
 
-  async function deleteStudent(id){
 
-    try{
+  async function deleteStudent(id) {
+
+
+    try {
+
 
       const response = await fetch(
         `${API_URL}/student/${id}`,
         {
-          method:"DELETE"
+          method: "DELETE"
         }
       );
 
 
+
       if(response.ok){
+
         fetchStudents();
+
       }
 
 
-    }catch(error){
+
+    } catch(error) {
 
       console.log("Delete error:", error);
 
@@ -130,43 +142,44 @@ function App() {
 
 
 
-  async function updateStudent(id, student){
-
-
-    const name = prompt(
-      "Student name:",
-      student.student_name
-    );
-
-    const email = prompt(
-      "Student email:",
-      student.student_email
-    );
-
-    const phone = prompt(
-      "Student phone:",
-      student.student_phone_no
-    );
-
-    const level = prompt(
-      "Student level:",
-      student.student_level
-    );
-
+  async function updateStudent(id, student) {
 
 
     const updatedStudent = {
 
-      student_name:name,
-      student_email:email,
-      student_phone_no:phone,
-      student_level:Number(level)
+
+      student_name: prompt(
+        "Name:",
+        student.student_name
+      ),
+
+
+      student_email: prompt(
+        "Email:",
+        student.student_email
+      ),
+
+
+      student_phone_no: prompt(
+        "Phone:",
+        student.student_phone_no
+      ),
+
+
+      student_level: Number(
+        prompt(
+          "Level:",
+          student.student_level
+        )
+      )
 
     };
 
 
 
-    try{
+
+
+    try {
 
 
       const response = await fetch(
@@ -185,6 +198,7 @@ function App() {
       );
 
 
+
       if(response.ok){
 
         fetchStudents();
@@ -192,13 +206,16 @@ function App() {
       }
 
 
-    }catch(error){
+
+    } catch(error){
 
       console.log("Update error:", error);
 
     }
 
+
   }
+
 
 
 
@@ -218,6 +235,7 @@ function App() {
       </div>
 
 
+
       <p>
         React + FastAPI + MongoDB Student System
       </p>
@@ -229,87 +247,49 @@ function App() {
       <form onSubmit={handleSubmit}>
 
 
-        <div>
+        <label>Name</label>
 
-          <label>Name</label>
-
-          <input
-
-            type="text"
-
-            value={studentName}
-
-            onChange={(e)=>setStudentName(e.target.value)}
-
-          />
-
-        </div>
+        <input
+          type="text"
+          value={studentName}
+          onChange={(e)=>setStudentName(e.target.value)}
+        />
 
 
 
+        <label>Email</label>
 
-        <div>
-
-          <label>Email</label>
-
-          <input
-
-            type="email"
-
-            value={studentEmail}
-
-            onChange={(e)=>setStudentEmail(e.target.value)}
-
-          />
-
-        </div>
+        <input
+          type="email"
+          value={studentEmail}
+          onChange={(e)=>setStudentEmail(e.target.value)}
+        />
 
 
 
+        <label>Phone</label>
 
-        <div>
-
-          <label>Phone</label>
-
-          <input
-
-            type="text"
-
-            value={phoneNumber}
-
-            onChange={(e)=>setPhoneNumber(e.target.value)}
-
-          />
-
-        </div>
+        <input
+          type="text"
+          value={phoneNumber}
+          onChange={(e)=>setPhoneNumber(e.target.value)}
+        />
 
 
 
+        <label>Level</label>
 
-        <div>
-
-          <label>Level</label>
-
-          <input
-
-            type="number"
-
-            value={studentLevel}
-
-            onChange={(e)=>setStudentLevel(e.target.value)}
-
-          />
-
-        </div>
+        <input
+          type="number"
+          value={studentLevel}
+          onChange={(e)=>setStudentLevel(e.target.value)}
+        />
 
 
 
-        <button className="counter" type="submit">
-
+        <button type="submit">
           Add Student
-
         </button>
-
 
 
       </form>
@@ -322,7 +302,9 @@ function App() {
       <div id="next-steps">
 
 
+
         <div>
+
 
           <h2>
             Preview
@@ -341,6 +323,7 @@ function App() {
 
 
 
+
         <div>
 
 
@@ -350,10 +333,10 @@ function App() {
 
 
 
-          {students.map((student,index)=>(
+          {students.map((student)=>(
 
 
-            <div key={index}>
+            <div key={student.id}>
 
 
               <p>
@@ -377,7 +360,6 @@ function App() {
 
 
 
-
               <button
                 onClick={() =>
                   updateStudent(student.id, student)
@@ -397,7 +379,6 @@ function App() {
               </button>
 
 
-
               <hr/>
 
 
@@ -411,7 +392,6 @@ function App() {
 
 
       </div>
-
 
 
     </div>
