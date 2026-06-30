@@ -10,7 +10,7 @@ DB_NAME = os.getenv("DB_NAME", "student_db")
 
 
 client = AsyncIOMotorClient(
-    MONGO_URL,
+    MONGODB_URL,
     serverSelectionTimeoutMS=5000
 )
 
