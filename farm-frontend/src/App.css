@@ -1,171 +1,331 @@
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
+
+  margin:0;
+  min-height:100vh;
+
+  font-family:Arial, sans-serif;
 
   background:
-    radial-gradient(circle at top left, #ff4ecd55, transparent 35%),
-    radial-gradient(circle at bottom right, #00f5ff55, transparent 35%),
-    linear-gradient(135deg, #111827, #1e1b4b);
+  radial-gradient(circle at top left,#ff4ecd55,transparent 35%),
+  radial-gradient(circle at bottom right,#00f5ff55,transparent 35%),
+  linear-gradient(135deg,#111827,#1e1b4b);
 
-  color: white;
+  color:white;
+
 }
+
+
+
+
 
 
 /* MAIN */
 
 #center {
 
-  min-height: 100vh;
-  padding: 40px;
+  min-height:100vh;
+
+  width:100%;
+
+  box-sizing:border-box;
+
+  padding:30px 20px;
+
 
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
+
   justify-content:center;
 
-  gap:25px;
+
+  gap:20px;
+
+
+  overflow-x:hidden;
 
 }
+
+
+
+
 
 
 /* TITLE */
 
-.hero .base {
+.hero .base,
+.base {
+
 
   font-size:50px;
 
-  background:
-    linear-gradient(
-      90deg,
-      #ff4ecd,
-      #00f5ff,
-      #a855f7
-    );
+  text-align:center;
 
-  background-clip:text;
-  -webkit-background-clip:text;
-  color:transparent;
 
-  animation: glow 3s infinite alternate;
+  color:white !important;
 
-}
+
+  text-shadow:
+
+  0 0 15px #ff4ecd,
+  0 0 30px #00f5ff,
+  0 0 50px #8b5cf6;
 
 
 
-@keyframes glow {
+  animation:titleGlow 3s infinite alternate;
 
-  from {
-    filter:drop-shadow(0 0 10px #ff4ecd);
-  }
-
-  to {
-    filter:drop-shadow(0 0 25px #00f5ff);
-  }
 
 }
 
 
 
 
-/* DESCRIPTION */
+
+@keyframes titleGlow {
+
+
+from {
+
+
+text-shadow:
+
+0 0 15px #ff4ecd,
+0 0 30px #00f5ff;
+
+
+}
+
+
+to {
+
+
+text-shadow:
+
+0 0 30px #ff4ecd,
+0 0 60px #00f5ff;
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
 
 p {
-  color:#dbeafe;
+
+color:#dbeafe;
+
+text-align:center;
+
 }
 
 
 
 
 
-/* FORM */
+
+
+
+
+/* FORMS */
 
 
 form {
 
-  width: min(420px,90%);
 
-  padding:30px;
-
-  display:flex;
-  flex-direction:column;
-
-  gap:15px;
+width:min(420px,90%);
 
 
-  background:
-  linear-gradient(
-    145deg,
-    rgba(255,78,205,.25),
-    rgba(0,245,255,.15)
-  );
+padding:30px;
 
 
-  backdrop-filter:blur(15px);
+display:flex;
+
+flex-direction:column;
 
 
-  border-radius:20px;
+gap:15px;
 
-  border:1px solid rgba(255,255,255,.25);
 
-  box-shadow:
-  0 20px 50px rgba(0,0,0,.4);
+
+background:
+
+linear-gradient(
+145deg,
+rgba(255,78,205,.25),
+rgba(0,245,255,.15)
+);
+
+
+
+backdrop-filter:blur(12px);
+
+
+
+border-radius:20px;
+
+
+
+border:1px solid rgba(255,255,255,.25);
+
+
+
+box-shadow:
+
+0 20px 50px rgba(0,0,0,.5);
+
+
+
+box-sizing:border-box;
+
 
 }
 
 
 
 
-form div {
-
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-
-}
 
 
 
 label {
 
-  color:#f9a8d4;
-  font-weight:bold;
+
+color:#f9a8d4;
+
+font-weight:bold;
+
 
 }
 
 
 
 
-/* INPUT */
+
+
+
+
 
 input {
 
-  padding:12px;
 
-  border-radius:12px;
+width:100%;
 
-  border:2px solid transparent;
+box-sizing:border-box;
 
-  outline:none;
 
-  background:#0f172a;
+padding:12px;
 
-  color:white;
 
-  transition:.3s;
+border-radius:12px;
+
+
+border:none;
+
+
+outline:none;
+
+
+background:#0f172a;
+
+
+color:white;
+
 
 }
+
 
 
 
 input:focus {
 
-  border-color:#00f5ff;
 
-  box-shadow:
-  0 0 15px #00f5ff;
+box-shadow:
+
+0 0 15px #00f5ff;
+
 
 }
+
+
+
+
+
+
+
+
+
+
+/* PASSWORD EYE */
+
+
+.password-box {
+
+
+position:relative;
+
+width:100%;
+
+
+}
+
+
+
+.password-box input {
+
+
+padding-right:50px;
+
+
+}
+
+
+
+.eye-btn {
+
+
+position:absolute;
+
+
+right:10px;
+
+
+top:50%;
+
+
+transform:translateY(-50%);
+
+
+
+background:transparent;
+
+
+border:none;
+
+
+cursor:pointer;
+
+
+font-size:20px;
+
+
+color:white;
+
+
+}
+
+
+
+
 
 
 
@@ -176,46 +336,58 @@ input:focus {
 
 .counter {
 
-  margin-top:10px;
 
-  padding:14px;
-
-  border-radius:14px;
-
-  border:none;
-
-  cursor:pointer;
-
-  color:white;
-
-  font-size:16px;
-
-  font-weight:bold;
+padding:12px 20px;
 
 
-  background:
-
-  linear-gradient(
-    90deg,
-    #ff4ecd,
-    #8b5cf6
-  );
+border-radius:14px;
 
 
-  transition:.3s;
+border:none;
+
+
+cursor:pointer;
+
+
+color:white;
+
+
+font-size:16px;
+
+
+font-weight:bold;
+
+
+
+background:
+
+linear-gradient(
+90deg,
+#ff4ecd,
+#8b5cf6
+);
+
+
+
+transition:.3s;
+
 
 }
+
 
 
 
 
 .counter:hover {
 
-  transform:translateY(-4px);
 
-  box-shadow:
+transform:translateY(-3px);
 
-  0 0 25px #ff4ecd;
+
+box-shadow:
+
+0 0 25px #ff4ecd;
+
 
 }
 
@@ -224,82 +396,161 @@ input:focus {
 
 
 
-/* CARDS */
-
-#next-steps {
-
-  width:90%;
-
-  display:flex;
-
-  gap:20px;
-
-}
 
 
 
-#next-steps > div {
-
-  flex:1;
-
-  padding:25px;
+/* AUTH BUTTONS */
 
 
-  background:
-
-  linear-gradient(
-    145deg,
-    rgba(0,245,255,.15),
-    rgba(168,85,247,.25)
-  );
+#center p {
 
 
-  backdrop-filter:blur(15px);
+display:flex;
 
+justify-content:center;
 
-  border-radius:20px;
+align-items:center;
 
+gap:10px;
 
-  border:1px solid rgba(255,255,255,.2);
+flex-wrap:wrap;
 
-
-  transition:.3s;
 
 }
 
 
 
 
-#next-steps > div:hover {
 
-  transform:translateY(-8px);
+#center p .counter {
 
-  box-shadow:
-  0 15px 30px rgba(0,0,0,.4);
+
+width:auto;
+
+
+padding:10px 18px;
+
 
 }
 
+
+
+
+
+
+
+
+
+/* LOGOUT */
+
+
+#center > button {
+
+
+align-self:flex-end;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+/* STUDENT CARD */
+
+
+.student-card {
+
+
+width:min(500px,90%);
+
+
+padding:20px;
+
+
+
+background:
+
+linear-gradient(
+145deg,
+rgba(0,245,255,.15),
+rgba(168,85,247,.25)
+);
+
+
+
+border-radius:20px;
+
+
+backdrop-filter:blur(10px);
+
+
+border:1px solid #ffffff33;
+
+
+}
+
+
+
+
+
+
+
+
+
+h1,h2 {
+
+
+text-align:center;
+
+
+}
 
 
 
 h2 {
 
-  color:#00f5ff;
+
+color:#00f5ff;
+
 
 }
+
+
+
+
+
 
 
 
 
 hr {
 
-  border:none;
 
-  height:1px;
+width:100%;
 
-  background:#ffffff55;
+
+border:none;
+
+
+height:1px;
+
+
+background:#ffffff55;
+
 
 }
+
+
+
+
+
 
 
 
@@ -307,27 +558,39 @@ hr {
 
 /* MOBILE */
 
+
 @media(max-width:768px){
 
 
- #next-steps {
 
-   flex-direction:column;
-
- }
+.base {
 
 
- .hero .base {
-
-   font-size:35px;
-
- }
+font-size:35px;
 
 
- #center {
+}
 
-   padding:20px;
 
- }
+
+#center {
+
+
+padding:20px;
+
+
+}
+
+
+
+form {
+
+
+padding:20px;
+
+
+}
+
+
 
 }

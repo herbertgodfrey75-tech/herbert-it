@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from config.database import db
 from schemas.users import UserCreate
 from passlib.context import CryptContext
+from datetime import datetime
 
 
 user_router = APIRouter()
@@ -18,6 +19,7 @@ pwd_context = CryptContext(
 @user_router.post("/register")
 async def register_user(user: UserCreate):
 
+
     existing_user = await db.users.find_one(
         {
             "email": user.email
@@ -33,30 +35,45 @@ async def register_user(user: UserCreate):
         )
 
 
-    # bcrypt only accepts max 72 characters
+
     hashed_password = pwd_context.hash(
         user.password[:72]
     )
 
 
+
     new_user = {
+
 
         "full_name": user.full_name,
 
         "email": user.email,
 
+        "phone": user.phone,
+
         "password_hash": hashed_password,
+
 
         "role": "user",
 
-        "is_active": True
+
+        "is_active": True,
+
+
+        "created_at": datetime.utcnow(),
+
+        "updated_at": datetime.utcnow(),
+
+        "last_login_at": None
 
     }
+
 
 
     result = await db.users.insert_one(
         new_user
     )
+
 
 
     return {
@@ -66,6 +83,7 @@ async def register_user(user: UserCreate):
         "id": str(result.inserted_id)
 
     }
+
 
 
 
@@ -89,6 +107,7 @@ async def login_user(
     )
 
 
+
     if not user:
 
         raise HTTPException(
@@ -98,14 +117,12 @@ async def login_user(
 
 
 
-    password_correct = pwd_context.verify(
+
+    if not pwd_context.verify(
         password[:72],
         user["password_hash"]
-    )
+    ):
 
-
-
-    if not password_correct:
 
         raise HTTPException(
             status_code=401,
@@ -114,11 +131,30 @@ async def login_user(
 
 
 
+
+
+    await db.users.update_one(
+        {
+            "_id": user["_id"]
+        },
+        {
+            "$set":{
+                "last_login_at": datetime.utcnow()
+            }
+        }
+    )
+
+
+
+
     return {
+
 
         "message": "Login successful",
 
+
         "user_id": str(user["_id"]),
+
 
         "role": user["role"]
 

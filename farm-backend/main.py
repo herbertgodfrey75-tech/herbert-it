@@ -9,35 +9,59 @@ from routers.users import user_router
 
 
 
-async def test():
-
-    result = await db.list_collection_names()
-
-    print(
-        "Mongo DB Connected! Collections:",
-        result
-    )
 
 
+async def test_db():
 
-if __name__ == "__main__":
+    try:
 
-    asyncio.run(test())
+        result = await db.list_collection_names()
+
+        print(
+            "MongoDB Connected ✅ Collections:",
+            result
+        )
+
+
+    except Exception as e:
+
+        print(
+            "MongoDB Connection Error ❌",
+            e
+        )
+
+
+
 
 
 
 app = FastAPI(
-    title="A Student FARM APP",
-    description="This is a Student FARM app"
+
+    title="Student FARM APP",
+
+    description="Student Management System"
+
 )
 
 
 
 
 
-# CORS SETTINGS
+@app.on_event("startup")
+async def startup_event():
+
+    await test_db()
+
+
+
+
+
+
+
+# CORS
 
 app.add_middleware(
+
     CORSMiddleware,
 
     allow_origins=[
@@ -48,6 +72,7 @@ app.add_middleware(
 
     ],
 
+
     allow_credentials=True,
 
     allow_methods=["*"],
@@ -55,6 +80,8 @@ app.add_middleware(
     allow_headers=["*"],
 
 )
+
+
 
 
 
@@ -75,9 +102,13 @@ app.include_router(
 
 
 
+
+
 @app.get("/")
 async def home():
 
     return {
+
         "message": "Student FARM API is running 🚀"
+
     }
