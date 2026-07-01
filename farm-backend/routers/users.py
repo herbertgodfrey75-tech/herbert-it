@@ -5,13 +5,16 @@ from passlib.context import CryptContext
 from datetime import datetime
 
 
+
 user_router = APIRouter()
+
 
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
 )
+
 
 
 
@@ -37,13 +40,17 @@ async def register_user(user: UserCreate):
 
 
 
+
     hashed_password = pwd_context.hash(
         user.password[:72]
     )
 
 
 
+
+
     new_user = {
+
 
         "full_name": user.full_name,
 
@@ -51,10 +58,60 @@ async def register_user(user: UserCreate):
 
         "password_hash": hashed_password,
 
+
+
+        # assignment fields
+        "phone": user.phone,
+
+        "address": user.address,
+
+        "city": user.city,
+
+        "state": user.state,
+
+        "country": user.country,
+
+
+        "date_of_birth": user.date_of_birth,
+
+        "profile_image_url": user.profile_image_url,
+
+        "nin": user.nin,
+
+        "specialization": user.specialization,
+
+
+
+        # permissions
         "role": "user",
+
+        "role_id": None,
+
+        "admin_group_id": None,
+
+        "service_id": None,
+
+        "permission_id": None,
+
+
+
+        # status
+        "marketing_consent": user.marketing_consent,
 
         "is_active": True,
 
+        "is_available": True,
+
+
+        "verification_status": "unverified",
+
+        "verification_token": None,
+
+        "email_verified_at": None,
+
+
+
+        # dates
         "created_at": datetime.utcnow(),
 
         "updated_at": datetime.utcnow(),
@@ -66,17 +123,22 @@ async def register_user(user: UserCreate):
 
 
 
+
+
+
     result = await db.users.insert_one(
         new_user
     )
 
 
 
+
     return {
 
-        "message": "User created successfully",
 
-        "id": str(result.inserted_id)
+        "message":"User created successfully",
+
+        "id":str(result.inserted_id)
 
     }
 
@@ -89,53 +151,78 @@ async def register_user(user: UserCreate):
 
 
 # LOGIN USER
+
 @user_router.post("/login")
 async def login_user(
-    email: str,
-    password: str
+    email:str,
+    password:str
 ):
+
 
 
     user = await db.users.find_one(
         {
-            "email": email
+            "email":email
         }
     )
 
 
 
+
+
     if not user:
 
+
         raise HTTPException(
+
             status_code=404,
+
             detail="User not found"
+
         )
+
+
+
+
 
 
 
     if "password_hash" not in user:
 
+
         raise HTTPException(
+
             status_code=500,
-            detail="Account has no password saved. Register again."
+
+            detail="Password missing. Register again."
+
         )
 
 
 
 
-    password_correct = pwd_context.verify(
+
+
+
+    if not pwd_context.verify(
+
         password[:72],
+
         user["password_hash"]
-    )
+
+    ):
 
 
-
-    if not password_correct:
 
         raise HTTPException(
+
             status_code=401,
+
             detail="Wrong password"
+
         )
+
+
 
 
 
@@ -145,14 +232,21 @@ async def login_user(
     await db.users.update_one(
 
         {
-            "_id": user["_id"]
+            "_id":user["_id"]
         },
 
         {
+
             "$set":
+
             {
-                "last_login_at": datetime.utcnow()
+
+                "last_login_at":datetime.utcnow(),
+
+                "updated_at":datetime.utcnow()
+
             }
+
         }
 
     )
@@ -161,12 +255,20 @@ async def login_user(
 
 
 
+
+
     return {
+
 
         "message":"Login successful",
 
+
         "user_id":str(user["_id"]),
 
-        "role":user["role"]
+
+        "role":user.get(
+            "role",
+            "user"
+        )
 
     }
