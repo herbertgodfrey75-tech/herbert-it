@@ -15,6 +15,7 @@ pwd_context = CryptContext(
 
 
 
+
 # REGISTER USER
 @user_router.post("/register")
 async def register_user(user: UserCreate):
@@ -44,21 +45,15 @@ async def register_user(user: UserCreate):
 
     new_user = {
 
-
         "full_name": user.full_name,
 
         "email": user.email,
 
-        "phone": user.phone,
-
-        # "password_hash": hashed_password,
-
+        "password_hash": hashed_password,
 
         "role": "user",
 
-
         "is_active": True,
-
 
         "created_at": datetime.utcnow(),
 
@@ -67,6 +62,7 @@ async def register_user(user: UserCreate):
         "last_login_at": None
 
     }
+
 
 
 
@@ -117,12 +113,24 @@ async def login_user(
 
 
 
+    if "password_hash" not in user:
 
-    if not pwd_context.verify(
+        raise HTTPException(
+            status_code=500,
+            detail="Account has no password saved. Register again."
+        )
+
+
+
+
+    password_correct = pwd_context.verify(
         password[:72],
         user["password_hash"]
-    ):
+    )
 
+
+
+    if not password_correct:
 
         raise HTTPException(
             status_code=401,
@@ -133,29 +141,32 @@ async def login_user(
 
 
 
+
     await db.users.update_one(
+
         {
             "_id": user["_id"]
         },
+
         {
-            "$set":{
+            "$set":
+            {
                 "last_login_at": datetime.utcnow()
             }
         }
+
     )
+
 
 
 
 
     return {
 
+        "message":"Login successful",
 
-        "message": "Login successful",
+        "user_id":str(user["_id"]),
 
-
-        "user_id": str(user["_id"]),
-
-
-        "role": user["role"]
+        "role":user["role"]
 
     }
