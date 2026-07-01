@@ -1,7 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+
 
 class Student(BaseModel):
-    student_name : str
-    student_email : str
-    student_phone_no : str
-    student_level : int
+
+    student_name: str
+
+    student_email: EmailStr
+
+    student_phone_no: str
+
+    student_level: int
