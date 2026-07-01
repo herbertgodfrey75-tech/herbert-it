@@ -10,7 +10,6 @@ from routers.users import user_router
 
 
 
-
 async def test_db():
 
     try:
@@ -35,6 +34,7 @@ async def test_db():
 
 
 
+
 app = FastAPI(
 
     title="Student FARM APP",
@@ -42,6 +42,51 @@ app = FastAPI(
     description="Student Management System"
 
 )
+
+
+
+
+
+
+
+# CORS SETTINGS
+
+app.add_middleware(
+
+    CORSMiddleware,
+
+    allow_origins=[
+
+        "https://herbert-it-1.onrender.com",
+
+        "http://localhost:5173",
+
+        "http://127.0.0.1:5173"
+
+    ],
+
+
+    allow_credentials=True,
+
+
+    allow_methods=[
+
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+
+    ],
+
+
+    allow_headers=["*"],
+
+)
+
+
+
+
 
 
 
@@ -58,30 +103,8 @@ async def startup_event():
 
 
 
-# CORS SETTINGS
-
-app.add_middleware(
-    CORSMiddleware,
-
-    allow_origins=[
-        "https://herbert-it-1.onrender.com",
-        "http://localhost:5173",
-    ],
-
-    allow_credentials=True,
-
-    allow_methods=["*"],
-
-    allow_headers=["*"],
-)
-
-
-
-
-
-
-
 # ROUTES
+
 
 app.include_router(
     student_router
@@ -98,11 +121,14 @@ app.include_router(
 
 
 
+
 @app.get("/")
+
 async def home():
 
     return {
 
-        "message": "Student FARM API is running 🚀"
+        "message":
+        "Student FARM API is running 🚀"
 
     }
