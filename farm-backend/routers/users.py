@@ -51,7 +51,7 @@ async def register_user(user: UserCreate):
 
         "phone": user.phone,
 
-        "password_hash": hashed_password,
+        # "password_hash": hashed_password,
 
 
         "role": "user",
