@@ -209,3 +209,132 @@ async def update_user(
     return {
         "message": "Profile updated successfully"
     }
+
+    # ==========================
+# GET ALL USERS
+# ==========================
+@user_router.get("/users")
+async def get_all_users():
+
+    users = []
+
+    async for user in db.users.find():
+
+        user["id"] = str(user["_id"])
+
+        del user["_id"]
+
+        user.pop("password_hash", None)
+
+        users.append(user)
+
+    return users
+
+    # ==========================
+# DELETE USER
+# ==========================
+@user_router.delete("/users/{user_id}")
+async def delete_user(user_id: str):
+
+    result = await db.users.delete_one(
+        {
+            "_id": ObjectId(user_id)
+        }
+    )
+
+    if result.deleted_count == 0:
+
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return {
+
+        "message": "User deleted successfully"
+
+    }
+
+    # ==========================
+# CHANGE USER ROLE
+# ==========================
+@user_router.put("/users/{user_id}/role")
+async def update_role(
+    user_id: str,
+    role: str
+):
+
+    if role not in ["user", "admin"]:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid role"
+        )
+
+    result = await db.users.update_one(
+
+        {
+            "_id": ObjectId(user_id)
+        },
+
+        {
+            "$set": {
+                "role": role,
+                "updated_at": datetime.utcnow()
+            }
+        }
+
+    )
+
+    if result.matched_count == 0:
+
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return {
+
+        "message": "Role updated"
+
+    }
+
+# ==========================
+# UPDATE USER STATUS
+# ==========================
+@user_router.put("/users/{user_id}/status")
+async def update_status(
+    user_id: str,
+    is_active: bool
+):
+
+    result = await db.users.update_one(
+
+        {
+            "_id": ObjectId(user_id)
+        },
+
+        {
+            "$set": {
+
+                "is_active": is_active,
+
+                "updated_at": datetime.utcnow()
+
+            }
+        }
+
+    )
+
+    if result.matched_count == 0:
+
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return {
+
+        "message": "Status updated"
+
+    }
