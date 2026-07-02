@@ -1,10 +1,18 @@
 import "./App.css";
 
-function AdminDashboard() {
+function AdminDashboard({
+
+  goStudents,
+
+  goManageUsers,
+
+  goProfile
+
+}) {
 
   return (
 
-    <div>
+    <div className="dashboard-page fade">
 
       <div className="hero">
 
@@ -13,7 +21,7 @@ function AdminDashboard() {
         </h1>
 
         <p>
-          Welcome back, Administrator
+          Welcome back, Administrator 👋
         </p>
 
       </div>
@@ -25,9 +33,15 @@ function AdminDashboard() {
           <h2>👥 Manage Users</h2>
 
           <p>
-            View all registered users, promote admins,
-            deactivate accounts and delete users.
+            View, promote and manage all registered users.
           </p>
+
+          <button
+            className="counter"
+            onClick={goManageUsers}
+          >
+            Open
+          </button>
 
         </div>
 
@@ -36,18 +50,32 @@ function AdminDashboard() {
           <h2>🎓 Manage Students</h2>
 
           <p>
-            Add, update and remove student records.
+            View and manage every student in the system.
           </p>
+
+          <button
+            className="counter"
+            onClick={goStudents}
+          >
+            Open
+          </button>
 
         </div>
 
         <div className="dashboard-card">
 
-          <h2>🙍 My Profile</h2>
+          <h2>👤 My Profile</h2>
 
           <p>
-            Update your profile information.
+            Update your account information.
           </p>
+
+          <button
+            className="counter"
+            onClick={goProfile}
+          >
+            Open
+          </button>
 
         </div>
 
@@ -59,6 +87,13 @@ function AdminDashboard() {
             Coming Soon...
           </p>
 
+          <button
+            className="counter"
+            disabled
+          >
+            Soon
+          </button>
+
         </div>
 
         <div className="dashboard-card">
@@ -68,6 +103,13 @@ function AdminDashboard() {
           <p>
             Coming Soon...
           </p>
+
+          <button
+            className="counter"
+            disabled
+          >
+            Soon
+          </button>
 
         </div>
 

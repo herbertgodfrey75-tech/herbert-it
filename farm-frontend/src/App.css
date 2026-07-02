@@ -1117,5 +1117,49 @@ font-size:20px;
 width:100%;
 
 }
+.user-card{
 
+display:flex;
+
+flex-direction:column;
+
+gap:20px;
+
+padding:28px;
+
+background:rgba(255,255,255,.08);
+
+border-radius:22px;
+
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.12);
+
+width:100%;
+
+max-width:850px;
+
+margin:auto;
+
+transition:.3s;
+
+}
+
+.user-card:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 0 20px rgba(139,92,246,.25);
+
+}
+
+.user-card hr{
+
+border:none;
+
+height:1px;
+
+background:rgba(255,255,255,.08);
+
+}
 }

@@ -107,100 +107,142 @@ function ManageUsers() {
         <h3>No users found.</h3>
       )}
 
-      {filteredUsers.map(user => (
+     {filteredUsers.map(user => (
 
-        <div
-          key={user.id}
-          className="student-card"
+  <div
+    key={user.id}
+    className="user-card"
+  >
+
+    <div className="profile-header">
+
+      <div className="profile-avatar">
+
+        {user.full_name
+          .split(" ")
+          .map(name => name[0])
+          .join("")
+          .toUpperCase()}
+
+      </div>
+
+      <div className="profile-info">
+
+        <h2>{user.full_name}</h2>
+
+        <p>📧 {user.email}</p>
+
+        <p>📞 {user.phone || "No phone"}</p>
+
+        <p>🌍 {user.country || "Not set"}</p>
+
+      </div>
+
+    </div>
+
+    <hr />
+
+    <div
+      style={{
+        display: "flex",
+        gap: "25px",
+        flexWrap: "wrap",
+        marginBottom: "20px"
+      }}
+    >
+
+      <p>
+
+        🛡 <b>Role:</b>
+
+        {" "}
+
+        <span className={`badge ${user.role}`}>
+
+          {user.role}
+
+        </span>
+
+      </p>
+
+      <p>
+
+        ❤️ <b>Status:</b>
+
+        {" "}
+
+        <span
+          className={`badge ${
+            user.is_active
+              ? "user"
+              : "inactive"
+          }`}
         >
 
-          <h2>{user.full_name}</h2>
+          {user.is_active
+            ? "ACTIVE"
+            : "INACTIVE"}
 
-          <p>
-            📧 {user.email}
-          </p>
+        </span>
 
-          <p>
-            📞 {user.phone || "No phone"}
-          </p>
+      </p>
 
-          <p>
-            🌍 {user.country || "Not set"}
-          </p>
+    </div>
 
-          <p>
-            🛡 Role:
-            {" "}
-            <b>{user.role}</b>
-          </p>
+    <div className="student-actions">
 
-          <p>
-            Status:
-            {" "}
-            <b
-              style={{
-                color: user.is_active
-                  ? "#22c55e"
-                  : "#ef4444"
-              }}
-            >
-              {user.is_active
-                ? "ACTIVE"
-                : "INACTIVE"}
-            </b>
-          </p>
+      <button
+        className="counter"
+        onClick={() =>
+          changeRole(
+            user.id,
+            user.role
+          )
+        }
+      >
 
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              flexWrap: "wrap",
-              marginTop: "15px"
-            }}
-          >
+        {user.role === "admin"
 
-            <button
-              className="counter"
-              onClick={() =>
-                changeRole(
-                  user.id,
-                  user.role
-                )
-              }
-            >
-              {user.role === "admin"
-                ? "Demote"
-                : "Promote"}
-            </button>
+          ? "⬇ Demote"
 
-            <button
-              className="counter"
-              onClick={() =>
-                changeStatus(
-                  user.id,
-                  user.is_active
-                )
-              }
-            >
-              {user.is_active
-                ? "Deactivate"
-                : "Activate"}
-            </button>
+          : "⬆ Promote"}
 
-            <button
-              className="counter"
-              onClick={() =>
-                deleteUser(user.id)
-              }
-            >
-              Delete
-            </button>
+      </button>
 
-          </div>
+      <button
+        className="counter"
+        onClick={() =>
+          changeStatus(
+            user.id,
+            user.is_active
+          )
+        }
+      >
 
-        </div>
+        {user.is_active
 
-      ))}
+          ? "🚫 Deactivate"
+
+          : "✅ Activate"}
+
+      </button>
+
+      <button
+        className="counter"
+        onClick={() =>
+          deleteUser(user.id)
+        }
+      >
+
+        🗑 Delete
+
+      </button>
+
+    </div>
+
+  </div>
+
+))}
 
     </div>
   );
