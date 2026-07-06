@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { toast } from "sonner";
 
 
 const API_URL =
@@ -18,6 +19,7 @@ function Login({ onLogin, goRegister }) {
   const [password,setPassword] = useState("");
 
   const [showPassword,setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -25,82 +27,62 @@ function Login({ onLogin, goRegister }) {
 
 
 
-  async function login(e){
+ async function login(e){
 
-    e.preventDefault();
+  e.preventDefault();
 
+  setLoading(true);
 
-    try{
+  try{
 
+    const response = await fetch(
 
-      const response = await fetch(
+      `${API_URL}/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
 
-        `${API_URL}/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+      {
+        method:"POST"
+      }
 
-        {
-          method:"POST"
-        }
+    );
 
+    const data = await response.json();
+
+    if(response.ok){
+
+      localStorage.setItem(
+        "user_id",
+        data.user_id
       );
 
+      localStorage.setItem(
+        "role",
+        data.role
+      );
 
+      toast.success("Welcome back! 👋");
 
-
-      const data = await response.json();
-
-
-
-
-
-      if(response.ok){
-
-
-        localStorage.setItem(
-          "user_id",
-          data.user_id
-        );
-
-
-        localStorage.setItem(
-          "role",
-          data.role
-        );
-
-
+      setTimeout(() => {
 
         onLogin();
 
+      }, 800);
 
+    }else{
 
-      }else{
-
-
-        alert(
-          data.detail || "Login failed"
-        );
-
-
-      }
-
-
-
-
-
-    }catch(error){
-
-
-      console.log(error);
-
-
-      alert(
-        "Cannot connect to server"
-      );
-
-
+     toast.error(data.detail || "Login failed");
     }
 
+  }catch(error){
+
+    console.log(error);
+
+   toast.error(data.detail || "Cannot connect to server.");
 
   }
+
+  setLoading(false);
+
+}
 
 
 
@@ -245,18 +227,31 @@ function Login({ onLogin, goRegister }) {
 
 
 
-        <button
+       <button
 
-          className="counter"
+  className="counter"
 
-          type="submit"
+  type="submit"
 
-        >
+  disabled={loading}
 
-          Login
+>
 
-        </button>
+  {
 
+    loading
+
+    ?
+
+    "Signing In..."
+
+    :
+
+    "Login"
+
+  }
+
+</button>
 
 
 

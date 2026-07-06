@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import "./App.css";
 
 const API_URL =
@@ -7,11 +8,13 @@ const API_URL =
     : "https://herbert-it.onrender.com";
 
 function Profile() {
+
   const userId = localStorage.getItem("user_id");
 
   const [loading, setLoading] = useState(true);
 
   const [user, setUser] = useState({
+
     full_name: "",
     email: "",
     phone: "",
@@ -32,72 +35,143 @@ function Profile() {
     created_at: "",
     updated_at: "",
     last_login_at: ""
+
   });
 
   useEffect(() => {
+
     loadProfile();
+
   }, []);
 
   async function loadProfile() {
+
+    setLoading(true);
+
     try {
-      const response = await fetch(`${API_URL}/users/${userId}`);
+
+      const response = await fetch(
+        `${API_URL}/users/${userId}`
+      );
 
       const data = await response.json();
 
       if (response.ok) {
+
         setUser(data);
+
       } else {
-        alert(data.detail);
+
+        toast.error(
+          data.detail || "Couldn't load profile."
+        );
+
       }
+
     } catch (error) {
+
       console.log(error);
-      alert("Couldn't load profile.");
+
+      toast.error(
+        "Couldn't load profile."
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
 
-    setLoading(false);
   }
 
   async function saveProfile(e) {
+
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      const response = await fetch(`${API_URL}/users/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-      });
+
+      const response = await fetch(
+
+        `${API_URL}/users/${userId}`,
+
+        {
+
+          method: "PUT",
+
+          headers: {
+
+            "Content-Type": "application/json"
+
+          },
+
+          body: JSON.stringify(user)
+
+        }
+
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        alert("Profile updated successfully 🎉");
-        loadProfile();
+
+        toast.success(
+          "Profile updated successfully! 🎉"
+        );
+
+        await loadProfile();
+
       } else {
-        alert(data.detail);
+
+        toast.error(
+          data.detail || "Couldn't update profile."
+        );
+
       }
+
     } catch (error) {
+
       console.log(error);
-      alert("Server error.");
+
+      toast.error(
+        "Server error."
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
+
   }
 
   if (loading) {
+
     return (
+
       <div id="center">
+
         <h2>Loading profile...</h2>
+
       </div>
+
     );
+
   }
 
   return (
+
     <div id="center">
 
       <div className="hero">
+
         <h1 className="base">
+
           My Profile
+
         </h1>
+
       </div>
 
       <form onSubmit={saveProfile}>
@@ -105,6 +179,7 @@ function Profile() {
         <h2>Personal Information</h2>
 
         <label>Full Name</label>
+
         <input
           value={user.full_name || ""}
           onChange={(e) =>
@@ -116,12 +191,14 @@ function Profile() {
         />
 
         <label>Email</label>
+
         <input
           value={user.email || ""}
           disabled
         />
 
         <label>Phone Number</label>
+
         <input
           value={user.phone || ""}
           onChange={(e) =>
@@ -133,6 +210,7 @@ function Profile() {
         />
 
         <label>Date of Birth</label>
+
         <input
           type="date"
           value={user.date_of_birth || ""}
@@ -149,6 +227,7 @@ function Profile() {
         <h2>Address</h2>
 
         <label>Address</label>
+
         <input
           value={user.address || ""}
           onChange={(e) =>
@@ -160,6 +239,7 @@ function Profile() {
         />
 
         <label>City</label>
+
         <input
           value={user.city || ""}
           onChange={(e) =>
@@ -171,6 +251,7 @@ function Profile() {
         />
 
         <label>State</label>
+
         <input
           value={user.state || ""}
           onChange={(e) =>
@@ -180,8 +261,8 @@ function Profile() {
             })
           }
         />
+                <label>Country</label>
 
-        <label>Country</label>
         <input
           value={user.country || ""}
           onChange={(e) =>
@@ -197,6 +278,7 @@ function Profile() {
         <h2>Professional</h2>
 
         <label>Specialization</label>
+
         <input
           value={user.specialization || ""}
           onChange={(e) =>
@@ -208,6 +290,7 @@ function Profile() {
         />
 
         <label>NIN</label>
+
         <input
           value={user.nin || ""}
           onChange={(e) =>
@@ -219,6 +302,7 @@ function Profile() {
         />
 
         <label>Profile Image URL</label>
+
         <input
           value={user.profile_image_url || ""}
           onChange={(e) =>
@@ -234,30 +318,35 @@ function Profile() {
         <h2>Account Information</h2>
 
         <label>Role</label>
+
         <input
           value={user.role || ""}
           disabled
         />
 
         <label>Verification Status</label>
+
         <input
           value={user.verification_status || ""}
           disabled
         />
 
         <label>Account Active</label>
+
         <input
           value={user.is_active ? "Yes" : "No"}
           disabled
         />
 
         <label>Available</label>
+
         <input
           value={user.is_available ? "Yes" : "No"}
           disabled
         />
 
         <label>Created At</label>
+
         <input
           value={
             user.created_at
@@ -268,6 +357,7 @@ function Profile() {
         />
 
         <label>Last Login</label>
+
         <input
           value={
             user.last_login_at
@@ -284,6 +374,7 @@ function Profile() {
             gap: "10px"
           }}
         >
+
           <input
             type="checkbox"
             checked={user.marketing_consent}
@@ -300,19 +391,37 @@ function Profile() {
           />
 
           Receive Marketing Emails
+
         </label>
 
         <button
           className="counter"
           type="submit"
+          disabled={loading}
         >
-          Save Changes
+
+          {
+
+            loading
+
+              ?
+
+              "Saving..."
+
+              :
+
+              "💾 Save Changes"
+
+          }
+
         </button>
 
       </form>
 
     </div>
+
   );
+
 }
 
 export default Profile;

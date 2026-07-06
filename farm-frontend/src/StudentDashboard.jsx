@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import "./App.css";
 
 const API_URL =
@@ -21,6 +22,8 @@ function StudentDashboard() {
   const [editingId, setEditingId] = useState(null);
 
   const [search, setSearch] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
 
@@ -54,6 +57,10 @@ function StudentDashboard() {
 
         setStudents(data);
 
+      }else{
+
+        toast.error(data.detail || "Couldn't load students.");
+
       }
 
     }
@@ -62,6 +69,8 @@ function StudentDashboard() {
 
       console.log(error);
 
+      toast.error("Couldn't connect to server.");
+
     }
 
   }
@@ -69,6 +78,8 @@ function StudentDashboard() {
   async function submitStudent(e){
 
     e.preventDefault();
+
+    setLoading(true);
 
     const student={
 
@@ -140,9 +151,35 @@ function StudentDashboard() {
 
       if(response.ok){
 
+        toast.success(
+
+          editingId
+
+          ?
+
+          "Student updated successfully! 🎉"
+
+          :
+
+          "Student added successfully! 🎉"
+
+        );
+
         clearForm();
 
         fetchStudents();
+
+      }
+
+      else{
+
+        const data=await response.json();
+
+        toast.error(
+
+          data.detail || "Operation failed."
+
+        );
 
       }
 
@@ -151,6 +188,14 @@ function StudentDashboard() {
     catch(error){
 
       console.log(error);
+
+      toast.error("Server error.");
+
+    }
+
+    finally{
+
+      setLoading(false);
 
     }
 
@@ -216,7 +261,15 @@ function StudentDashboard() {
 
     if(response.ok){
 
+      toast.success("Student deleted.");
+
       fetchStudents();
+
+    }
+
+    else{
+
+      toast.error("Delete failed.");
 
     }
 
@@ -277,27 +330,28 @@ function StudentDashboard() {
       )
 
     );
-    return (
+
+  return (
 
 <div id="center" className="fade">
 
   <div className="hero">
 
     <h1 className="base">
+
       🌱 Student Farm
+
     </h1>
 
     <p>
+
       Welcome back 👋
+
     </p>
 
   </div>
 
- 
-  {/* DASHBOARD STATS */}
-
   <div className="stats-grid">
-
     <div className="stat-card">
 
       <h3>Total Students</h3>
@@ -329,8 +383,6 @@ function StudentDashboard() {
     </div>
 
   </div>
-
-  {/* FORM */}
 
   <form onSubmit={submitStudent}>
 
@@ -405,21 +457,50 @@ function StudentDashboard() {
     />
 
     <button
+
       className="counter"
+
       type="submit"
+
+      disabled={loading}
+
     >
 
       {
 
-        editingId
+        loading
 
         ?
 
-        "💾 Save Changes"
+        (
+
+          editingId
+
+          ?
+
+          "Saving..."
+
+          :
+
+          "Adding..."
+
+        )
 
         :
 
-        "➕ Add Student"
+        (
+
+          editingId
+
+          ?
+
+          "💾 Save Changes"
+
+          :
+
+          "➕ Add Student"
+
+        )
 
       }
 
@@ -447,8 +528,6 @@ function StudentDashboard() {
 
   </form>
 
-  {/* SEARCH */}
-
   <div className="search-bar">
 
     <input
@@ -463,11 +542,7 @@ function StudentDashboard() {
 
   </div>
 
-  <h2>
-
-    Your Students
-
-  </h2>
+  <h2>Your Students</h2>
 
   {
 
@@ -479,17 +554,9 @@ function StudentDashboard() {
 
       <div className="empty-state">
 
-        <h2>
+        <h2>📚 No Students Yet</h2>
 
-          📚 No Students Yet
-
-        </h2>
-
-        <p>
-
-          Start by adding your first student.
-
-        </p>
+        <p>Start by adding your first student.</p>
 
       </div>
 
@@ -551,29 +618,13 @@ function StudentDashboard() {
 
                     <div>
 
-                      <h3>
+                      <h3>{student.student_name}</h3>
 
-                        {student.student_name}
+                      <p>📧 {student.student_email}</p>
 
-                      </h3>
+                      <p>📞 {student.student_phone_no}</p>
 
-                      <p>
-
-                        📧 {student.student_email}
-
-                      </p>
-
-                      <p>
-
-                        📞 {student.student_phone_no}
-
-                      </p>
-
-                      <p>
-
-                        🎓 Level {student.student_level}
-
-                      </p>
+                      <p>🎓 Level {student.student_level}</p>
 
                     </div>
 
@@ -587,11 +638,7 @@ function StudentDashboard() {
 
                     className="counter"
 
-                    onClick={()=>
-
-                      editStudent(student)
-
-                    }
+                    onClick={()=>editStudent(student)}
 
                   >
 
@@ -607,11 +654,7 @@ function StudentDashboard() {
 
                       className="counter"
 
-                      onClick={()=>
-
-                        deleteStudent(student.id)
-
-                      }
+                      onClick={()=>deleteStudent(student.id)}
 
                     >
 
