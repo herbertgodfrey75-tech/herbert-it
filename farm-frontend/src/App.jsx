@@ -91,60 +91,53 @@ function App() {
 
     >
 
-      {
+     {
+  page === "dashboard" && (
 
-        page === "dashboard" &&
+    role === "admin"
 
-        (
+      ?
 
-          role === "admin"
+      <AdminDashboard
+        goProfile={() => setPage("profile")}
+        goStudents={() => setPage("students")}
+        goManageUsers={() => setPage("users")}
+      />
 
-          ?
+      :
 
-          <AdminDashboard />
+      <StudentDashboard
+        logout={logout}
+        openProfile={() => setPage("profile")}
+      />
 
-          :
+  )
+}
 
-          <StudentDashboard />
+{
+  page === "students" &&
 
-        )
+  <StudentDashboard
+    logout={logout}
+    openProfile={() => setPage("profile")}
+  />
 
-      }
+}
 
-      {
+{
+  page === "profile" &&
 
-        page === "students"
+  <Profile />
 
-        &&
+}
 
-        <StudentDashboard />
+{
+  role === "admin" &&
+  page === "users" &&
 
-      }
+  <ManageUsers />
 
-      {
-
-        page === "profile"
-
-        &&
-
-        <Profile />
-
-      }
-
-      {
-
-        role === "admin"
-
-        &&
-
-        page === "users"
-
-        &&
-
-        <ManageUsers />
-
-      }
-
+}
     </Layout>
 
   );
