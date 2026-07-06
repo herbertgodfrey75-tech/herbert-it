@@ -10,6 +10,7 @@ import StudentDashboard from "./StudentDashboard";
 import AdminDashboard from "./AdminDashboard";
 import Profile from "./Profile";
 import ManageUsers from "./ManageUsers";
+import LandingPage from "./LandingPage";
 
 function App() {
 
@@ -18,60 +19,93 @@ function App() {
   );
 
   const [showRegister, setShowRegister] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
 
   const [page, setPage] = useState("dashboard");
 
   const role = localStorage.getItem("role");
 
-  function logout() {
+ function logout() {
 
-    localStorage.clear();
+  localStorage.clear();
 
-    setLoggedIn(false);
+  setLoggedIn(false);
 
-    setShowRegister(false);
+  setShowRegister(false);
 
-    setPage("dashboard");
+  setShowLanding(true);
 
-  }
+  setPage("dashboard");
+
+}
 
     // ==========================
   // LOGIN / REGISTER
   // ==========================
+if (!loggedIn) {
 
-  if (!loggedIn) {
-
-    if (showRegister) {
-
-      return (
-
-        <Register
-          goLogin={() => setShowRegister(false)}
-        />
-
-      );
-
-    }
+  if (showLanding) {
 
     return (
 
-      <Login
+      <LandingPage
 
-        onLogin={() => {
+        goLogin={() => setShowLanding(false)}
 
-          setLoggedIn(true);
+        goRegister={() => {
 
-          setPage("dashboard");
+          setShowLanding(false);
+          setShowRegister(true);
 
         }}
-
-        goRegister={() => setShowRegister(true)}
 
       />
 
     );
 
   }
+
+  if (showRegister) {
+
+    return (
+
+      <Register
+
+        goLogin={() => {
+
+          setShowRegister(false);
+
+        }}
+
+      />
+
+    );
+
+  }
+
+  return (
+
+    <Login
+
+      onLogin={() => {
+
+        setLoggedIn(true);
+
+        setPage("dashboard");
+
+      }}
+
+      goRegister={() => {
+
+        setShowRegister(true);
+
+      }}
+
+    />
+
+  );
+
+}
 
   // ==========================
   // MAIN APP
