@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import "./App.css";
+import DashboardChart from "./components/DashboardChart";
 
 const API_URL =
   window.location.hostname === "localhost"
@@ -541,6 +542,7 @@ function StudentDashboard() {
     />
 
   </div>
+<DashboardChart students={students} />
 
   <h2>Your Students</h2>
 

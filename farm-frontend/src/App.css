@@ -1846,3 +1846,19 @@ border-left:5px solid #f59e0b;
 border-left:5px solid #3b82f6;
 
 }
+
+.chart-card{
+
+    background: var(--card-bg);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin: 30px 0;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+
+}
