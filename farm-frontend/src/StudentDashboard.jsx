@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import "./App.css";
-import DashboardChart from "./components/DashboardChart";
+import DashboardChart from "./Components/DashboardChart";
 
 const API_URL =
   window.location.hostname === "localhost"
