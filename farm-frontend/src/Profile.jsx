@@ -12,6 +12,10 @@ function Profile() {
   const userId = localStorage.getItem("user_id");
 
   const [loading, setLoading] = useState(true);
+  const [fullNameError, setFullNameError] = useState("");
+const [phoneError, setPhoneError] = useState("");
+const [ninError, setNinError] = useState("");
+const [specializationError, setSpecializationError] = useState("");
 
   const [user, setUser] = useState({
 
@@ -182,13 +186,42 @@ function Profile() {
 
         <input
           value={user.full_name || ""}
-          onChange={(e) =>
+          onChange={(e) => {
+            const value = e.target.value.replace(/^\s+/, "");
+
+            if (!/^[A-Za-z\s'-]*$/.test(value)) {
+              return;
+            }
+
             setUser({
               ...user,
-              full_name: e.target.value
-            })
-          }
+              full_name: value.replace(/\s{2,}/g, " "),
+            });
+
+            if (value === "") {
+              setFullNameError("");
+            } else if (value.trim().length < 3) {
+              setFullNameError("Full name must be at least 3 characters.");
+            } else {
+              setFullNameError("Looks good.");
+            }
+          }}
         />
+
+        {fullNameError && (
+          <p
+            style={{
+              color:
+                fullNameError === "Looks good."
+                  ? "#22c55e"
+                  : "#ef4444",
+              fontSize: "14px",
+              marginTop: "5px",
+            }}
+          >
+            {fullNameError}
+          </p>
+        )}
 
         <label>Email</label>
 

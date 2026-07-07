@@ -20,6 +20,8 @@ function Login({ onLogin, goRegister }) {
 
   const [showPassword,setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
 
 
@@ -30,6 +32,13 @@ function Login({ onLogin, goRegister }) {
  async function login(e){
 
   e.preventDefault();
+
+  if (
+  emailError !== "Looks good." ||
+  passwordError !== "Looks good."
+) {
+  return;
+}
 
   setLoading(true);
 
@@ -136,21 +145,47 @@ function Login({ onLogin, goRegister }) {
         </label>
 
 
-        <input
+       <input
+  type="email"
+  placeholder="Enter email"
+  value={email}
+  onChange={(e) => {
 
-          type="email"
+    const value = e.target.value.replace(/\s/g, "");
 
-          placeholder="Enter email"
+    setEmail(value);
 
-          value={email}
+    if (value === "") {
 
-          onChange={
-            e=>setEmail(e.target.value)
-          }
+      setEmailError("");
 
-          required
+    } else if (!/\S+@\S+\.\S+/.test(value)) {
 
-        />
+      setEmailError("Please enter a valid email address.");
+
+    } else {
+
+      setEmailError("Looks good.");
+
+    }
+
+  }}
+  required
+/>
+{emailError && (
+  <p
+    style={{
+      color:
+        emailError === "Looks good."
+          ? "#22c55e"
+          : "#ef4444",
+      fontSize: "14px",
+      marginTop: "5px"
+    }}
+  >
+    {emailError}
+  </p>
+)}
 
 
 
@@ -167,34 +202,51 @@ function Login({ onLogin, goRegister }) {
         <div className="password-box">
 
 
-          <input
+        <input
+  type={
+    showPassword
+      ? "text"
+      : "password"
+  }
+  placeholder="Enter password"
+  value={password}
+  onChange={(e) => {
 
+    const value = e.target.value;
 
-            type={
-              showPassword
-              ? "text"
-              : "password"
-            }
+    setPassword(value);
 
+    if (value === "") {
 
-            placeholder="Enter password"
+      setPasswordError("");
 
+    } else if (value.length < 8) {
 
-            value={password}
+      setPasswordError("Password must be at least 8 characters.");
 
+    } else {
 
-            onChange={
-              e=>setPassword(e.target.value)
-            }
+      setPasswordError("Looks good.");
 
+    }
 
-            required
-
-
-          />
-
-
-
+  }}
+  required
+/>
+{passwordError && (
+  <p
+    style={{
+      color:
+        passwordError === "Looks good."
+          ? "#22c55e"
+          : "#ef4444",
+      fontSize: "14px",
+      marginTop: "5px"
+    }}
+  >
+    {passwordError}
+  </p>
+)}
           <button
 
             type="button"

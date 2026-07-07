@@ -19,6 +19,10 @@ function StudentDashboard() {
   const [studentEmail, setStudentEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [studentLevel, setStudentLevel] = useState("");
+  const [studentNameError, setStudentNameError] = useState("");
+  const [studentEmailError, setStudentEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [levelError, setLevelError] = useState("");
 
   const [editingId, setEditingId] = useState(null);
 
@@ -79,6 +83,21 @@ function StudentDashboard() {
   async function submitStudent(e){
 
     e.preventDefault();
+
+    if (
+  studentNameError &&
+  studentNameError !== "Looks good."
+) {
+  return;
+}
+if(
+studentNameError!=="Looks good."||
+studentEmailError!=="Looks good."||
+phoneError!=="Looks good."||
+levelError!=="Looks good."
+){
+return;
+}
 
     setLoading(true);
 
@@ -407,55 +426,187 @@ function StudentDashboard() {
 
     <label>Name</label>
 
-    <input
+  <input
+  value={studentName}
+  maxLength={50}
+  onChange={(e) => {
 
-      value={studentName}
+    const value = e.target.value.replace(/^\s+/, "");
 
-      onChange={e=>setStudentName(e.target.value)}
+    if (!/^[A-Za-z\s'-]*$/.test(value)) {
+      return;
+    }
 
-      required
+    setStudentName(value.replace(/\s{2,}/g, " "));
 
-    />
+    if (value === "") {
 
+      setStudentNameError("");
+
+    } else if (value.trim().length < 3) {
+
+      setStudentNameError(
+        "Student name must be at least 3 characters."
+      );
+
+    } else {
+
+      setStudentNameError("Looks good.");
+
+    }
+
+  }}
+  required
+/>
+{studentNameError && (
+
+  <p
+    style={{
+      color:
+        studentNameError === "Looks good."
+          ? "#22c55e"
+          : "#ef4444",
+      fontSize: "14px",
+      marginTop: "5px"
+    }}
+  >
+
+    {studentNameError}
+
+  </p>
+
+)}
     <label>Email</label>
 
-    <input
+   <input
+type="email"
+value={studentEmail}
+onChange={(e)=>{
 
-      type="email"
+const value=e.target.value.replace(/\s/g,"");
 
-      value={studentEmail}
+setStudentEmail(value);
 
-      onChange={e=>setStudentEmail(e.target.value)}
+if(value===""){
 
-      required
+setStudentEmailError("");
 
-    />
+}
+else if(!/\S+@\S+\.\S+/.test(value)){
+
+setStudentEmailError("Invalid email address.");
+
+}
+else{
+
+setStudentEmailError("Looks good.");
+
+}
+
+}}
+required
+/>
+{studentEmailError&&(
+<p
+style={{
+color:studentEmailError==="Looks good."?"#22c55e":"#ef4444",
+fontSize:"14px",
+marginTop:"5px"
+}}
+>
+{studentEmailError}
+</p>
+)}
 
     <label>Phone</label>
 
-    <input
+  <input
+value={phoneNumber}
+maxLength={11}
+onChange={(e)=>{
 
-      value={phoneNumber}
+const value=e.target.value.replace(/\D/g,"");
 
-      onChange={e=>setPhoneNumber(e.target.value)}
+setPhoneNumber(value);
 
-      required
+if(value===""){
 
-    />
+setPhoneError("");
 
+}
+else if(value.length!==11){
+
+setPhoneError("Phone number must be exactly 11 digits.");
+
+}
+else if(!/^0[789]\d{9}$/.test(value)){
+
+setPhoneError("Phone number must start with 07, 08 or 09.");
+
+}
+else{
+
+setPhoneError("Looks good.");
+
+}
+
+}}
+required
+/>
+{phoneError&&(
+<p
+style={{
+color:phoneError==="Looks good."?"#22c55e":"#ef4444",
+fontSize:"14px",
+marginTop:"5px"
+}}
+>
+{phoneError}
+</p>
+)}
     <label>Level</label>
 
     <input
+type="number"
+min="100"
+max="800"
+value={studentLevel}
+onChange={(e)=>{
 
-      type="number"
+const value=e.target.value;
 
-      value={studentLevel}
+setStudentLevel(value);
 
-      onChange={e=>setStudentLevel(e.target.value)}
+if(value===""){
 
-      required
+setLevelError("");
 
-    />
+}
+else if(Number(value)<100||Number(value)>800){
+
+setLevelError("Level must be between 100 and 800.");
+
+}
+else{
+
+setLevelError("Looks good.");
+
+}
+
+}}
+required
+/>
+{levelError&&(
+<p
+style={{
+color:levelError==="Looks good."?"#22c55e":"#ef4444",
+fontSize:"14px",
+marginTop:"5px"
+}}
+>
+{levelError}
+</p>
+)}
 
     <button
 
