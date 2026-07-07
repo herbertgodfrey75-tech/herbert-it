@@ -426,56 +426,48 @@ return;
 
     <label>Name</label>
 
-  <input
-  value={studentName}
-  maxLength={50}
-  onChange={(e) => {
+    <input
+      value={studentName}
+      maxLength={50}
+      onChange={(e) => {
+        const value = e.target.value.replace(/^\s+/, "");
 
-    const value = e.target.value.replace(/^\s+/, "");
+        if (!/^[A-Za-z\s'-]*$/.test(value)) {
+          setStudentNameError(
+            "Only letters, spaces, apostrophes (') and hyphens (-) are allowed."
+          );
+          return;
+        }
 
-    if (!/^[A-Za-z\s'-]*$/.test(value)) {
-      return;
-    }
+        setStudentName(value.replace(/\s{2,}/g, " "));
 
-    setStudentName(value.replace(/\s{2,}/g, " "));
+        if (value === "") {
+          setStudentNameError("");
+        } else if (value.trim().length < 3) {
+          setStudentNameError(
+            "Student name must be at least 3 characters."
+          );
+        } else {
+          setStudentNameError("Looks good.");
+        }
+      }}
+    />
 
-    if (value === "") {
+    {studentNameError && (
+      <p
+        style={{
+          color:
+            studentNameError === "Looks good."
+              ? "#22c55e"
+              : "#ef4444",
+          fontSize: "14px",
+          marginTop: "5px",
+        }}
+      >
+        {studentNameError}
+      </p>
+    )}
 
-      setStudentNameError("");
-
-    } else if (value.trim().length < 3) {
-
-      setStudentNameError(
-        "Student name must be at least 3 characters."
-      );
-
-    } else {
-
-      setStudentNameError("Looks good.");
-
-    }
-
-  }}
-  required
-/>
-{studentNameError && (
-
-  <p
-    style={{
-      color:
-        studentNameError === "Looks good."
-          ? "#22c55e"
-          : "#ef4444",
-      fontSize: "14px",
-      marginTop: "5px"
-    }}
-  >
-
-    {studentNameError}
-
-  </p>
-
-)}
     <label>Email</label>
 
    <input
