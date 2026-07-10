@@ -70,12 +70,11 @@ function Login({ onLogin, goRegister }) {
 
       toast.success("Welcome back! 👋");
 
-      setTimeout(() => {
+     setTimeout(() => {
 
-        onLogin();
+  onLogin(data.role);
 
-      }, 800);
-
+}, 800);
     }else{
 
      toast.error(data.detail || "Login failed");

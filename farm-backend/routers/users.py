@@ -50,8 +50,8 @@ async def register_user(user: UserCreate):
         "nin": user.nin,
         "specialization": user.specialization,
 
-        # permissions
-        "role": "user",
+       # permissions
+        "role": user.role,
         "role_id": None,
         "admin_group_id": None,
         "service_id": None,

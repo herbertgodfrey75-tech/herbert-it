@@ -13,6 +13,8 @@ class UserCreate(BaseModel):
 
     password: str
 
+    role: str = "user"
+
 
     phone: str | None = None
 

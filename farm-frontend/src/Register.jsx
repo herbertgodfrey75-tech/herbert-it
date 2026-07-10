@@ -18,6 +18,7 @@ function Register({ goLogin }) {
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [role, setRole] = useState("user");
 
   async function register(e) {
     e.preventDefault();
@@ -61,6 +62,7 @@ function Register({ goLogin }) {
       email,
       phone,
       password,
+      role
     };
 
     try {
@@ -83,6 +85,7 @@ function Register({ goLogin }) {
       setEmail("");
       setPhone("");
       setPassword("");
+      setRole("user");
       setNameError("");
       setEmailError("");
       setPhoneError("");
@@ -229,6 +232,15 @@ function Register({ goLogin }) {
     {phoneError}
   </p>
 )}
+<label>Account Type</label>
+
+<select
+  value={role}
+  onChange={(e) => setRole(e.target.value)}
+>
+  <option value="user">User</option>
+  <option value="student">Student</option>
+</select>
 
         <label>Password</label>
         <div className="password-box">
